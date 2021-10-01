@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.view.cli.layout.recursivelist;
 
+import it.polimi.ingsw.client.view.cli.layout.CLI;
 import it.polimi.ingsw.client.view.cli.layout.GridElem;
 import it.polimi.ingsw.client.view.cli.layout.Option;
 
@@ -98,6 +99,22 @@ public abstract class RecursiveList extends GridElem {
     public void performLastChoice(){
         if (lastSelectedOption!=null)
             lastSelectedOption.perform();
+    }
+
+    public void selectInEnabledOption(CLI cli, String message)
+    {
+        selectInEnabledOption(cli,message,null);
+    }
+
+    public void selectInEnabledOption(CLI cli, String message, Runnable onEnterPressed)
+    {
+        Runnable r = ()->{
+            int choice = cli.getLastInt();
+            selectOptionAtPosition(choice);
+            performLastChoice();
+        };
+
+        cli.runOnIntListInput(message,"Select a valid choice", getAllEnabledOption().stream().mapToInt(GridElem::getFirstIdx),r,onEnterPressed);
     }
 
 }

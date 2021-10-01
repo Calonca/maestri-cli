@@ -25,7 +25,9 @@ public class Starter {
 
         r.addElem(Option.from("Press 0 to\nrun opt1",()->{}));
 
+        //Todo add input and option selection here
         r.addToCanvas(canvas,0,0);
+
 
         System.out.println(canvas);
 
