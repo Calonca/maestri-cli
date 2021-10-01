@@ -108,6 +108,7 @@ public abstract class RecursiveList extends GridElem {
 
     public void selectInEnabledOption(CLI cli, String message, Runnable onEnterPressed)
     {
+
         Runnable r = ()->{
             int choice = cli.getLastInt();
             selectOptionAtPosition(choice);

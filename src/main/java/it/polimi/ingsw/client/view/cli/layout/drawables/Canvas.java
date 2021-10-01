@@ -33,11 +33,16 @@ public class Canvas {
         return printer;
     }
 
-    public void resetDrawing(){
+    private void resetDrawing(){
         String lineChars = Characters.VERT_DIVIDER.getString()+" ".repeat(width-2)+Characters.VERT_DIVIDER.getString();
         matrix = Stream.generate(()-> generateLine(lineChars)).limit(height).toArray(String[][]::new);
 
         pointTracing = new UUID[height][width];
+    }
+
+    public void reset(){
+        resetDrawing();
+        lists=new HashMap<>();
     }
 
     private static String[] generateLine(String lineChars) {

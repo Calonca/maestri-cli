@@ -1,12 +1,34 @@
 package it.polimi.ingsw.client.view.cli.layout;
 
+import it.polimi.ingsw.client.view.cli.layout.drawables.Canvas;
+import it.polimi.ingsw.client.view.cli.textutil.Characters;
+import it.polimi.ingsw.client.view.cli.textutil.Color;
+
 import java.util.Arrays;
+import java.util.Scanner;
 import java.util.stream.IntStream;
 
 public class CLI {
 
-    private GridElem elem;
+    private Canvas canvas;
     private int lastInt;
+
+    public CLI() {
+        Thread inputThread = new Thread(() -> {
+            Scanner scanner = new Scanner(System.in);
+            while (true) {
+                lastInput = scanner.nextLine();
+                Runnable toRun = afterInput;
+                afterInput = this::show;
+                inputMessage = "Not asking for input";
+
+                errorMessage = null;
+                toRun.run();
+            }
+        });
+
+        inputThread.start();
+    }
 
     /**
      * Runs the provided runnable if the user inputs a number present in the possible values,
@@ -60,7 +82,7 @@ public class CLI {
      */
     public void runOnIntInput(String message, String errorMessage, int min, int max, Runnable r1,Runnable onEnter){
 
-        String inputMessage = message;
+        inputMessage = message;
 
         afterInput = ()->{
             try
@@ -98,16 +120,43 @@ public class CLI {
 
     }
 
-    private void show(){
-        if (elem!=null)
-            System.out.println(elem);
+    public void show(){
+        if (canvas!=null){
+            putStartDiv();
+            System.out.print(canvas);
+            putEndDiv();
+            if (errorMessage!=null)
+                printError(errorMessage+" ");
+            System.out.println(Color.colorString(inputMessage,Color.GREEN));
+        }
     }
 
-    public GridElem getElem() {
-        return elem;
+    private void printError(String error){
+        System.out.print(Color.colorString(error,Color.RED));
     }
 
-    public void setElem(GridElem elem) {
-        this.elem = elem;
+    public void putEndDiv(){
+        System.out.println(
+                Characters.BOTTOM_LEFT_DIV.getString()+
+                        Characters.HOR_DIVIDER.repeated(canvas.getWidth() -2)+
+                        Characters.BOTTOM_RIGHT_DIV.getString()
+        );
+    }
+
+    public void putStartDiv(){
+        System.out.println(
+                Characters.TOP_LEFT_DIV.getString()+
+                        Characters.HOR_DIVIDER.repeated(canvas.getWidth() -2)+
+                        Characters.TOP_RIGHT_DIV.getString()
+        );
+    }
+
+
+    public Canvas getCanvas() {
+        return canvas;
+    }
+
+    public void setCanvas(Canvas canvas) {
+        this.canvas = canvas;
     }
 }
